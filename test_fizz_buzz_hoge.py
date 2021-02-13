@@ -7,10 +7,13 @@ from datetime import datetime
 
 def fizz_buzz_hoge():
   now = datetime.now()
-  if now.minute % 15 == 0:
+  if now.hour >= 18:
+    if now.minute % 15 == 0:
+      return 'Buzz'
+    return 'Hoge'
+  elif now.minute % 15 ==0:
     return 'Fizz'
-  
-  return 'Buzz'
+  return 'Hoge'
 
 class TestFizzBuzzHoge(unittest.TestCase):
   def test_15分の倍数でFizzを返す(self):
@@ -18,7 +21,13 @@ class TestFizzBuzzHoge(unittest.TestCase):
       mock_datetime.now.return_value = MagicMock(minute=30)
       expect = fizz_buzz_hoge()
       self.assertEqual('Fizz', expect)
-  
-  def test_18時以降の時はBuzzを返す(self):
+   
+  def test_15分の倍数以外でHogeを返す(self):
     expect = fizz_buzz_hoge()
-    self.assertEqual('Buzz', expect)
+    self.assertEqual('Hoge', expect)
+
+  def test_18時以降で15分の倍数の場合はBuzzを返す(self):
+    with patch('test_fizz_buzz_hoge.datetime') as mock_datetime:
+      mock_datetime.now.return_value = MagicMock(hour=18,minute=30)
+      expect = fizz_buzz_hoge()
+      self.assertEqual('Buzz', expect)
